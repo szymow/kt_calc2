@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox id="calculator" prefHeight="650.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <Label id="display" fx:id="display1" alignment="CENTER_RIGHT" layoutX="10.0" layoutY="10.0" prefHeight="100.0" prefWidth="600.0" textAlignment="RIGHT">
+      <font>
+         <Font size="36.0" />
+      </font>
+   </Label>
+    <Label id="display" fx:id="display" alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="600.0">
+      <font>
+         <Font size="36.0" />
+      </font></Label>
+    <HBox>
+        <Button prefHeight="100.0" prefWidth="150.0" text="C">
+         <font>
+            <Font size="36.0" />
+         </font></Button>
+        <Button prefHeight="100.0" prefWidth="150.0" text="(">
+         <font>
+            <Font size="36.0" />
+         </font></Button>
+        <Button prefHeight="100.0" prefWidth="150.0" text=")">
+         <font>
+            <Font size="36.0" />
+         </font></Button>
+        <Button prefHeight="100.0" prefWidth="150.0" styleClass="op" text="*">
+         <font>
+            <Font size="36.0" />
+         </font></Button>
+    </HBox>
+    <HBox>
+        <Button prefHeight="100.0" prefWidth="150.0" text="7">
+         <font>
+            <Font size="36.0" />
+         </font></Button>
+        <Button prefHeight="100.0" prefWidth="150.0" text="8">
+         <font>
+            <Font size="36.0" />
+         </font></Button>
+        <Button prefHeight="100.0" prefWidth="150.0" text="9">
+         <font>
+            <Font size="36.0" />
+         </font></Button>
+        <Button prefHeight="100.0" prefWidth="150.0" styleClass="op" text="/">
+         <font>
+            <Font size="36.0" />
+         </font></Button>
+    </HBox>
+    <HBox>
+        <Button prefHeight="100.0" prefWidth="150.0" text="4">
+         <font>
+            <Font size="36.0" />
+         </font></Button>
+        <Button prefHeight="100.0" prefWidth="150.0" text="5">
+         <font>
+            <Font size="36.0" />
+         </font></Button>
+        <Button prefHeight="100.0" prefWidth="150.0" text="6">
+         <font>
+            <Font size="36.0" />
+         </font></Button>
+        <Button prefHeight="100.0" prefWidth="150.0" styleClass="op" text="+">
+         <font>
+            <Font size="36.0" />
+         </font></Button>
+    </HBox>
+    <HBox>
+        <Button prefHeight="100.0" prefWidth="150.0" text="1">
+         <font>
+            <Font size="36.0" />
+         </font></Button>
+        <Button prefHeight="100.0" prefWidth="150.0" text="2">
+         <font>
+            <Font size="36.0" />
+         </font></Button>
+        <Button prefHeight="100.0" prefWidth="150.0" text="3">
+         <font>
+            <Font size="36.0" />
+         </font></Button>
+        <Button prefHeight="100.0" prefWidth="150.0" styleClass="op" text="-">
+         <font>
+            <Font size="36.0" />
+         </font></Button>
+    </HBox>
+    <HBox>
+        <Button prefHeight="100.0" prefWidth="150.0" styleClass="zero" text="+/-">
+         <font>
+            <Font size="36.0" />
+         </font></Button>
+        <Button prefHeight="100.0" prefWidth="150.0" text="0">
+         <font>
+            <Font size="36.0" />
+         </font></Button>
+      <Button layoutX="160.0" layoutY="10.0" prefHeight="100.0" prefWidth="150.0" text=".">
+         <font>
+            <Font size="36.0" />
+         </font>
+      </Button>
+      <Button layoutX="311.0" layoutY="10.0" prefHeight="100.0" prefWidth="150.0" text="=">
+         <font>
+            <Font size="36.0" />
+         </font>
+      </Button>
+    </HBox>
+</VBox>
