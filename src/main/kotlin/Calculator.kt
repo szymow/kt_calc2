@@ -1,4 +1,3 @@
-import Op.*
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.Label
@@ -30,6 +29,8 @@ class Calculator : View() {
     @FXML lateinit var display1: Label
 
     val znaki = charArrayOf('+','-','*','/')
+    var pierwsza_liczba : Boolean = true
+    var wyswietlono_wynik : Boolean = false
 
     init {
         title = "Calculator"
@@ -41,40 +42,32 @@ class Calculator : View() {
         }
     }
 
-    var curried: Op = add(0.0)
-
-    fun opAction(fn: Op) {
-        curried = fn
-        display.text = ""
-    }
-
     val displayValue: Double
         get() = when (display.text) {
             "" -> 0.0
             else -> display.text.toDouble()
         }
 
-    private fun op(x: String): Unit {
-        if(display1.text.contains("=")){
+    private fun op(x: String) {
+        if(wyswietlono_wynik){
             display.text = ""
-            display1.text = ""
+            wyswietlono_wynik = false
+        }
+        if(display1.text.contains("=")){
+            czyszczenie()
         }
         if (Regex("[0-9.]").matches(x)) {
-            if(x == "." && display.text.isEmpty()) display.text += "0" + x
-            if(x == "." && display.text.contains("."))
-            else
-                display.text += x
-        } else {
+            if(x == "." && display.text.isEmpty()) display.text += "0$x"
+            if(!(x == "." && display.text.contains("."))) display.text += x
+        }
+        else {
             if (display.text.isEmpty() && display1.text.isEmpty() && (x[0] in znaki || x[0] == ')')) return
             if(x == "C"){
-                display1.text = ""
-                stosWartosci.clear()
-                stosZnakow.clear()
-                opAction(add(0.0))
+                czyszczenie()
             }
             else{
                 if (display.text.isEmpty() && display1.text.isNotEmpty() && display1.text.last() in znaki) return
-                if ( x == "+/-"){
+                if (x == "+/-"){
                     var temp : Double = display.text.toDouble()
                     temp = -temp
                     display.text = temp.toString()
@@ -86,47 +79,63 @@ class Calculator : View() {
                 }
             }
             when (x) {
-                "+" -> {
+                "+","-" -> {
                     stosWartosci.add(displayValue)
+                    display.text = ""
+                    if (!(pierwsza_liczba))
+                        dzialanie()
+                    else pierwsza_liczba = false
                     stosZnakow.add(x[0])
-                    opAction(add(displayValue))
                 }
-                "-" -> {
+                "/","*" -> {
                     stosWartosci.add(displayValue)
+                    display.text = ""
+                    if (!(pierwsza_liczba))
+                        dzialanie()
+                    else pierwsza_liczba = false
                     stosZnakow.add(x[0])
-                    opAction(sub(displayValue))
-                }
-                "/" -> {
-                    stosWartosci.add(displayValue)
-                    stosZnakow.add(x[0])
-                    opAction(div(displayValue))
-                }
-                "*" -> {
-                    stosWartosci.add(displayValue)
-                    stosZnakow.add(x[0])
-                    opAction(mult(displayValue))
                 }
                 "=" -> {
-                    display.text = curried.calc(displayValue).toString()
+                    stosWartosci.add(displayValue)
+                    display.text = ""
+                    dzialanie()
+                }
+                ")" -> {
+                    stosWartosci.add(displayValue)
+                    display.text = ""
+                    dzialanie()
                 }
             }
-            println("\t stosWartosci: $stosWartosci")
-            println("\t stosZnakow: $stosZnakow")
         }
     }
+
+    fun dzialanie(){
+        if(stosZnakow.isNotEmpty() && stosWartosci.isNotEmpty()) {
+
+            println("\t stosWartosci: $stosWartosci")
+            println("\t stosZnakow: $stosZnakow")
+
+            when (stosZnakow.pop()) {
+                '+' -> display.text = stosWartosci.push(dodawanie(stosWartosci.pop(), stosWartosci.pop())).toString()
+                '-' -> display.text = stosWartosci.push(odejmowanie(stosWartosci.pop(), stosWartosci.pop())).toString()
+                '*' -> display.text = stosWartosci.push(mnozenie(stosWartosci.pop(), stosWartosci.pop())).toString()
+                '/' -> display.text = stosWartosci.push(dzielenie(stosWartosci.pop(), stosWartosci.pop())).toString()
+            }
+            wyswietlono_wynik = true
+        }
+    }
+
+    //Zamiana kolejności itemów związana jest z kolejnością zdejmowania wartości ze stosu
+    fun dodawanie(zmienna1: Double, zmienna2: Double): Double = zmienna2 + zmienna1
+    fun odejmowanie(zmienna1: Double, zmienna2: Double): Double = zmienna2 - zmienna1
+    fun mnozenie(zmienna1: Double, zmienna2: Double): Double = zmienna1 * zmienna2
+    fun dzielenie(zmienna1: Double, zmienna2: Double) : Double = zmienna2 / zmienna1
+
+    fun czyszczenie(){
+        display.text = ""
+        display1.text = ""
+        stosWartosci.clear()
+        stosZnakow.clear()
+    }
+
 }
-
-sealed class Op(val x: Double) {
-    abstract fun calc(y: Double): Double
-    class add(x: Double) : Op(x) { override fun calc(y: Double) = x + y }
-    class sub(x: Double) : Op(x) { override fun calc(y: Double) = x - y }
-    class mult(x: Double) : Op(x) { override fun calc(y: Double) = x * y }
-    class div(x: Double) : Op(x) { override fun calc(y: Double) = x / y }
-}
-
-
-//Zamiana kolejności itemów związana jest z kolejnością zdejmowania wartości ze stosu
-fun dodawanie(zmienna1: Double, zmienna2: Double): Double = zmienna2 + zmienna1
-fun odejmowanie(zmienna1: Double, zmienna2: Double): Double = zmienna2 - zmienna1
-fun mnozenie(zmienna1: Double, zmienna2: Double): Double = zmienna1 * zmienna2
-fun dzielenie(zmienna1: Double, zmienna2: Double) : Double = zmienna2 / zmienna1
