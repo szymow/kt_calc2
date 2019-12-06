@@ -31,10 +31,10 @@ class Calculator : View() {
     val znaki = charArrayOf('+','-','*','/')
     var pierwsza_liczba : Boolean = true
     var wyswietlono_wynik : Boolean = false
+    var znak : Char = '\u0000'
 
     init {
         title = "Calculator"
-
         root.lookupAll(".button").forEach { button ->
             button.setOnMouseClicked {
                 op((button as Button).text)
@@ -61,16 +61,22 @@ class Calculator : View() {
             if(!(x == "." && display.text.contains("."))) display.text += x
         }
         else {
-            if (display.text.isEmpty() && display1.text.isEmpty() && (x[0] in znaki || x[0] == ')')) return
+            //Zamiana String na Char
+            if(x != "+/-")
+                znak = x[0]
+            if (display.text.isEmpty() && display1.text.isEmpty() && (x[0] in znaki || znak == ')')) return
             if(x == "C"){
                 czyszczenie()
             }
             else{
-                if (display.text.isEmpty() && display1.text.isNotEmpty() && display1.text.last() in znaki) return
+                //Zapobiega wpisanu paru znakow zaraz po sobie
+                if (display.text.isEmpty() && display1.text.isNotEmpty())
+                        if (znak in znaki && display1.text.last() in znaki) return
                 if (x == "+/-"){
                     var temp : Double = display.text.toDouble()
                     temp = -temp
                     display.text = temp.toString()
+                    return
                 }
                 else
                 {
@@ -78,33 +84,43 @@ class Calculator : View() {
                     display1.text += x
                 }
             }
-            when (x) {
-                "+","-" -> {
-                    stosWartosci.add(displayValue)
+            when (znak) {
+                '+','-' -> {
+                    sprawdz_nawias()
                     display.text = ""
-                    if (!(pierwsza_liczba))
-                        dzialanie()
+                    if (!(pierwsza_liczba)){
+                        if(stosZnakow.peek() in arrayOf('+','-','*','/'))
+                            dzialanie()
+                    }
                     else pierwsza_liczba = false
-                    stosZnakow.add(x[0])
+                    stosZnakow.add(znak)
                 }
-                "/","*" -> {
-                    stosWartosci.add(displayValue)
+                '/','*' -> {
+                    sprawdz_nawias()
                     display.text = ""
-                    if (!(pierwsza_liczba))
-                        dzialanie()
+                    if (!(pierwsza_liczba)){
+                        if(stosZnakow.peek() in arrayOf('*','/'))
+                            dzialanie()
+                    }
                     else pierwsza_liczba = false
-                    stosZnakow.add(x[0])
+                    stosZnakow.add(znak)
                 }
-                "=" -> {
+                '=' -> {
+                    sprawdz_nawias()
+                    display.text = ""
+                    do dzialanie()
+                    while(stosZnakow.isNotEmpty())
+                }
+                ')' -> {
                     stosWartosci.add(displayValue)
                     display.text = ""
-                    dzialanie()
+                    do dzialanie()
+                    while(stosZnakow.peek() != '(')
+                    stosZnakow.pop()
+                    println("\t stosZnakow: $stosZnakow")
+                    pierwsza_liczba = true
                 }
-                ")" -> {
-                    stosWartosci.add(displayValue)
-                    display.text = ""
-                    dzialanie()
-                }
+                '(' -> stosZnakow.add(znak)
             }
         }
     }
@@ -122,6 +138,9 @@ class Calculator : View() {
                 '/' -> display.text = stosWartosci.push(dzielenie(stosWartosci.pop(), stosWartosci.pop())).toString()
             }
             wyswietlono_wynik = true
+
+            println("\t stosWartosci: $stosWartosci")
+            println("\t stosZnakow: $stosZnakow")
         }
     }
 
@@ -136,6 +155,13 @@ class Calculator : View() {
         display1.text = ""
         stosWartosci.clear()
         stosZnakow.clear()
+        pierwsza_liczba = true
+    }
+
+    fun sprawdz_nawias(){
+        //Przed ostatni znak
+        if(display1.text[display1.text.lastIndex - 1] != ')')
+            stosWartosci.add(displayValue)
     }
 
 }

@@ -29,7 +29,7 @@
          <font>
             <Font size="36.0" />
          </font></Button>
-        <Button prefHeight="100.0" prefWidth="150.0" styleClass="op" text="*">
+        <Button prefHeight="100.0" prefWidth="150.0" styleClass="op" text="/">
          <font>
             <Font size="36.0" />
          </font></Button>
@@ -47,7 +47,7 @@
          <font>
             <Font size="36.0" />
          </font></Button>
-        <Button prefHeight="100.0" prefWidth="150.0" styleClass="op" text="/">
+        <Button prefHeight="100.0" prefWidth="150.0" styleClass="op" text="*">
          <font>
             <Font size="36.0" />
          </font></Button>
@@ -65,7 +65,7 @@
          <font>
             <Font size="36.0" />
          </font></Button>
-        <Button prefHeight="100.0" prefWidth="150.0" styleClass="op" text="+">
+        <Button prefHeight="100.0" prefWidth="150.0" styleClass="op" text="-">
          <font>
             <Font size="36.0" />
          </font></Button>
@@ -83,7 +83,7 @@
          <font>
             <Font size="36.0" />
          </font></Button>
-        <Button prefHeight="100.0" prefWidth="150.0" styleClass="op" text="-">
+        <Button prefHeight="100.0" prefWidth="150.0" styleClass="op" text="+">
          <font>
             <Font size="36.0" />
          </font></Button>
