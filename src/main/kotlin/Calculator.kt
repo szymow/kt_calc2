@@ -117,7 +117,7 @@ class Calculator : View() {
                     do dzialanie()
                     while(stosZnakow.peek() != '(')
                     stosZnakow.pop()
-                    println("\t stosZnakow: $stosZnakow")
+                    wyswietl_log()
                     pierwsza_liczba = true
                 }
                 '(' -> stosZnakow.add(znak)
@@ -128,8 +128,7 @@ class Calculator : View() {
     fun dzialanie(){
         if(stosZnakow.isNotEmpty() && stosWartosci.isNotEmpty()) {
 
-            println("\t stosWartosci: $stosWartosci")
-            println("\t stosZnakow: $stosZnakow")
+            wyswietl_log()
 
             when (stosZnakow.pop()) {
                 '+' -> display.text = stosWartosci.push(dodawanie(stosWartosci.pop(), stosWartosci.pop())).toString()
@@ -139,8 +138,7 @@ class Calculator : View() {
             }
             wyswietlono_wynik = true
 
-            println("\t stosWartosci: $stosWartosci")
-            println("\t stosZnakow: $stosZnakow")
+            wyswietl_log()
         }
     }
 
@@ -162,6 +160,11 @@ class Calculator : View() {
         //Przed ostatni znak
         if(display1.text[display1.text.lastIndex - 1] != ')')
             stosWartosci.add(displayValue)
+    }
+
+    fun wyswietl_log(){
+        println("\t stosWartosci: $stosWartosci")
+        println("\t stosZnakow: $stosZnakow")
     }
 
 }
