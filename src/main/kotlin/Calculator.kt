@@ -31,6 +31,7 @@ class Calculator : View() {
     val znaki = charArrayOf('+','-','*','/')
     var pierwsza_liczba : Boolean = true
     var wyswietlono_wynik : Boolean = false
+    var bladDziel : Boolean = false
     var znak : Char = '\u0000'
 
     init {
@@ -49,6 +50,10 @@ class Calculator : View() {
         }
 
     private fun op(x: String) {
+        if(bladDziel){
+            display1.text = ""
+            bladDziel = false
+        }
         if(wyswietlono_wynik){
             display.text = ""
             wyswietlono_wynik = false
@@ -64,6 +69,7 @@ class Calculator : View() {
             //Zamiana String na Char
             if(x != "+/-")
                 znak = x[0]
+            if (display1.text.contains('(') && x == "+/-") return
             if (display.text.isEmpty() && display1.text.isEmpty() && (x[0] in znaki || znak == ')')) return
             if(x == "C"){
                 czyszczenie()
@@ -111,7 +117,7 @@ class Calculator : View() {
                     display.text = ""
                     do dzialanie()
                     while(stosZnakow.isNotEmpty())
-                    liczenie_bez_znakow()
+                    pozostale_obliczenia()
                 }
                 ')' -> {
                     if ((display1.text.count { c: Char -> c == '('} > display1.text.count { c: Char -> c == ')'}))
@@ -142,12 +148,15 @@ class Calculator : View() {
                 '+' -> display.text = stosWartosci.push(dodawanie(stosWartosci.pop(), stosWartosci.pop())).toString()
                 '-' -> display.text = stosWartosci.push(odejmowanie(stosWartosci.pop(), stosWartosci.pop())).toString()
                 '*' -> display.text = stosWartosci.push(mnozenie(stosWartosci.pop(), stosWartosci.pop())).toString()
-                '/' -> display.text = stosWartosci.push(dzielenie(stosWartosci.pop(), stosWartosci.pop())).toString()
+                '/' -> {if(stosWartosci.peek() != 0.0)
+                    display.text = stosWartosci.push(dzielenie(stosWartosci.pop(), stosWartosci.pop())).toString()
+                    else bladDzielZero()
+                }
             }
             wyswietlono_wynik = true
             wyswietl_log()
 
-            liczenie_bez_znakow()
+            pozostale_obliczenia()
         }
     }
 
@@ -177,7 +186,7 @@ class Calculator : View() {
         println("\t stosZnakow: $stosZnakow")
     }
 
-    fun liczenie_bez_znakow(){
+    fun pozostale_obliczenia(){
         if(stosZnakow.isEmpty() && stosWartosci.isNotEmpty() && stosWartosci.size > 1){
             do{
                 wyswietl_log()
@@ -186,6 +195,15 @@ class Calculator : View() {
             }
             while(stosWartosci.isEmpty())
         }
+    }
+
+    fun bladDzielZero(){
+        display1.text = "Błąd dzielenia przez 0"
+        display.text = ""
+        stosWartosci.clear()
+        stosZnakow.clear()
+        pierwsza_liczba = true
+        bladDziel = true
     }
 
 }
