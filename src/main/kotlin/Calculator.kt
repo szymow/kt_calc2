@@ -111,10 +111,11 @@ class Calculator : View() {
                     display.text = ""
                     do dzialanie()
                     while(stosZnakow.isNotEmpty())
+                    liczenie_bez_znakow()
                 }
                 ')' -> {
-//                    if ((display1.text.count { c: Char -> c == '('} > display1.text.count { c: Char -> c == ')'}))
-                    stosWartosci.add(displayValue)
+                    if ((display1.text.count { c: Char -> c == '('} > display1.text.count { c: Char -> c == ')'}))
+                        stosWartosci.add(displayValue)
                     display.text = ""
                     if(stosZnakow.peek() != '(')
                     {
@@ -123,9 +124,10 @@ class Calculator : View() {
                     }
                     stosZnakow.pop()
                     wyswietl_log()
+                    if(stosWartosci.size == 1) pierwsza_liczba = true
                 }
                 '(' -> {
-                    if(stosZnakow.peek() == '-') stosWartosci.add(displayValue)
+                    if(stosZnakow.isNotEmpty() && stosZnakow.peek() == '-') stosWartosci.add(displayValue)
                     stosZnakow.add(znak)
                 }
             }
@@ -134,7 +136,6 @@ class Calculator : View() {
 
     fun dzialanie(){
         if(stosZnakow.isNotEmpty() && stosWartosci.isNotEmpty()) {
-
             wyswietl_log()
 
             when (stosZnakow.pop()) {
@@ -144,13 +145,9 @@ class Calculator : View() {
                 '/' -> display.text = stosWartosci.push(dzielenie(stosWartosci.pop(), stosWartosci.pop())).toString()
             }
             wyswietlono_wynik = true
+            wyswietl_log()
 
-            wyswietl_log()
-        }
-        if(stosZnakow.isEmpty() && stosWartosci.isNotEmpty()){
-            wyswietl_log()
-            display.text = stosWartosci.push(dodawanie(stosWartosci.pop(), stosWartosci.pop())).toString()
-            wyswietl_log()
+            liczenie_bez_znakow()
         }
     }
 
@@ -178,6 +175,17 @@ class Calculator : View() {
     fun wyswietl_log(){
         println("\t stosWartosci: $stosWartosci")
         println("\t stosZnakow: $stosZnakow")
+    }
+
+    fun liczenie_bez_znakow(){
+        if(stosZnakow.isEmpty() && stosWartosci.isNotEmpty() && stosWartosci.size > 1){
+            do{
+                wyswietl_log()
+                display.text = stosWartosci.push(dodawanie(stosWartosci.pop(), stosWartosci.pop())).toString()
+                wyswietl_log()
+            }
+            while(stosWartosci.isEmpty())
+        }
     }
 
 }
