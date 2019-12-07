@@ -90,7 +90,8 @@ class Calculator : View() {
                     display.text = ""
                     if (!(pierwsza_liczba)){
                         if(stosZnakow.peek() in arrayOf('+','-','*','/'))
-                            dzialanie()
+                            do dzialanie()
+                            while(stosZnakow.isNotEmpty() && stosZnakow.peek() in arrayOf('+','-'))
                     }
                     else pierwsza_liczba = false
                     stosZnakow.add(znak)
@@ -112,15 +113,21 @@ class Calculator : View() {
                     while(stosZnakow.isNotEmpty())
                 }
                 ')' -> {
+//                    if ((display1.text.count { c: Char -> c == '('} > display1.text.count { c: Char -> c == ')'}))
                     stosWartosci.add(displayValue)
                     display.text = ""
-                    do dzialanie()
-                    while(stosZnakow.peek() != '(')
+                    if(stosZnakow.peek() != '(')
+                    {
+                        do dzialanie()
+                        while(stosZnakow.peek() != '(')
+                    }
                     stosZnakow.pop()
                     wyswietl_log()
-                    pierwsza_liczba = true
                 }
-                '(' -> stosZnakow.add(znak)
+                '(' -> {
+                    if(stosZnakow.peek() == '-') stosWartosci.add(displayValue)
+                    stosZnakow.add(znak)
+                }
             }
         }
     }
@@ -138,6 +145,11 @@ class Calculator : View() {
             }
             wyswietlono_wynik = true
 
+            wyswietl_log()
+        }
+        if(stosZnakow.isEmpty() && stosWartosci.isNotEmpty()){
+            wyswietl_log()
+            display.text = stosWartosci.push(dodawanie(stosWartosci.pop(), stosWartosci.pop())).toString()
             wyswietl_log()
         }
     }
@@ -158,8 +170,9 @@ class Calculator : View() {
 
     fun sprawdz_nawias(){
         //Przed ostatni znak
-        if(display1.text[display1.text.lastIndex - 1] != ')')
-            stosWartosci.add(displayValue)
+        if(display1.text.isNotEmpty() && display.text.isNotEmpty())
+            if(display1.text[display1.text.lastIndex - 1] != ')')
+                stosWartosci.add(displayValue)
     }
 
     fun wyswietl_log(){
