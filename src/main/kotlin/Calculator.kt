@@ -69,7 +69,7 @@ class Calculator : View() {
             //Zamiana String na Char
             if(x != "+/-")
                 znak = x[0]
-            if (display1.text.contains('(') && x == "+/-") return
+            if (display.text.isEmpty() && x == "+/-") return
             if (display.text.isEmpty() && display1.text.isEmpty() && (x[0] in znaki || znak == ')')) return
             if(x == "C"){
                 czyszczenie()
@@ -120,7 +120,7 @@ class Calculator : View() {
                     pozostale_obliczenia()
                 }
                 ')' -> {
-                    if ((display1.text.count { c: Char -> c == '('} > display1.text.count { c: Char -> c == ')'}))
+                    if ((display1.text.count { c: Char -> c == '('} >= display1.text.count { c: Char -> c == ')'}))
                         stosWartosci.add(displayValue)
                     display.text = ""
                     if(stosZnakow.peek() != '(')
