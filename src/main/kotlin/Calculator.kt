@@ -71,6 +71,8 @@ class Calculator : View() {
                 znak = x[0]
             if (display.text.isEmpty() && x == "+/-") return
             if (display.text.isEmpty() && display1.text.isEmpty() && (x[0] in znaki || znak == ')')) return
+            if (display.text.isEmpty() && display1.text.isNotEmpty() && znak == ')')
+                if ((display1.text.count { c: Char -> c == '('} < (display1.text.count { c: Char -> c == ')'} + 1))) return
             if(x == "C"){
                 czyszczenie()
             }
@@ -79,9 +81,15 @@ class Calculator : View() {
                 if (display.text.isEmpty() && display1.text.isNotEmpty())
                         if (znak in znaki && display1.text.last() in znaki) return
                 if (x == "+/-"){
-                    var temp : Double = display.text.toDouble()
-                    temp = -temp
-                    display.text = temp.toString()
+                    if(display.text.contains('.')){
+                        val temp1 : Double = display.text.toDouble()
+                        val temp2 : Double = -temp1
+                        display.text = temp2.toString()
+                    } else {
+                        val temp3 : Int = display.text.toInt()
+                        val temp4 : Int = -temp3
+                        display.text = temp4.toString()
+                    }
                     return
                 }
                 else
@@ -94,6 +102,7 @@ class Calculator : View() {
                 '+','-' -> {
                     sprawdz_nawias()
                     display.text = ""
+                    if(znak == '-' && display1.text[display1.text.lastIndex - 1] == '(') stosWartosci.add(0.0)
                     if (!(pierwsza_liczba)){
                         if(stosZnakow.peek() in arrayOf('+','-','*','/'))
                             do dzialanie()
@@ -115,25 +124,35 @@ class Calculator : View() {
                 '=' -> {
                     sprawdz_nawias()
                     display.text = ""
+                    if(stosZnakow.isEmpty() && stosWartosci.size == 1){
+                        display1.text += stosWartosci.peek()
+                        return
+                    }
                     do dzialanie()
                     while(stosZnakow.isNotEmpty())
                     pozostale_obliczenia()
                 }
                 ')' -> {
-                    if ((display1.text.count { c: Char -> c == '('} >= display1.text.count { c: Char -> c == ')'}))
-                        stosWartosci.add(displayValue)
+                    sprawdz_nawias()
                     display.text = ""
-                    if(stosZnakow.peek() != '(')
-                    {
+
+                    if(stosZnakow.peek() != '(') {
                         do dzialanie()
-                        while(stosZnakow.peek() != '(')
+                        while (stosZnakow.isNotEmpty() && stosZnakow.peek() != '(')
                     }
-                    stosZnakow.pop()
+                    else{
+                        if(stosZnakow.isEmpty()){
+                            display.text = stosWartosci.peek().toString()
+                        }
+                        wyswietlono_wynik = true
+                    }
+
+                    if(stosZnakow.isNotEmpty()) stosZnakow.pop()
+
                     wyswietl_log()
                     if(stosWartosci.size == 1) pierwsza_liczba = true
                 }
                 '(' -> {
-                    if(stosZnakow.isNotEmpty() && stosZnakow.peek() == '-') stosWartosci.add(displayValue)
                     stosZnakow.add(znak)
                 }
             }
@@ -205,5 +224,4 @@ class Calculator : View() {
         pierwsza_liczba = true
         bladDziel = true
     }
-
 }
